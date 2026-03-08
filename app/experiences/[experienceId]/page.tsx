@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import Whop from "@whop/sdk";
 
 export default async function ExperiencePage({
   params,
@@ -7,12 +8,16 @@ export default async function ExperiencePage({
 }) {
   const { experienceId } = await params;
 
+  const whop = new Whop({ apiKey: process.env.WHOP_API_KEY });
+  const experience = await whop.experiences.retrieve(experienceId);
+  const companyId = experience.company_id;
+
   const redis = new Redis({
     url: process.env.storage_KV_REST_API_URL!,
     token: process.env.storage_KV_REST_API_TOKEN!,
   });
 
-  const googleDocUrl = (await redis.get<string>(`doc:${experienceId}`)) ?? "";
+  const googleDocUrl = (await redis.get<string>(`doc:${companyId}`)) ?? "";
 
   if (!googleDocUrl) {
     return (
