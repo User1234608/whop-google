@@ -58,7 +58,7 @@ export default async function DashboardPage({
         </button>
       </form>
       {savedUrl && (
-        <p className="mt-4 text-sm text-green-600">✓ Document is set</p>
+        <p className="mt-4 text-sm text-green-600">Document is set</p>
       )}
     </div>
   );
