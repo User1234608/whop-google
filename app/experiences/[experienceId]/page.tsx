@@ -1,5 +1,4 @@
 import { kv } from "@vercel/kv";
-import Whop from "@whop/sdk";
 
 export default async function ExperiencePage({
   params,
@@ -8,11 +7,9 @@ export default async function ExperiencePage({
 }) {
   const { experienceId } = await params;
 
-  const client = new Whop({ apiKey: process.env.WHOP_API_KEY });
-  const experience = await client.experiences.retrieve(experienceId);
-  const companyId = experience.company_id;
-
-  const googleDocUrl = await kv.get<string>(`doc:${companyId}`);
+  // Use experienceId as the key directly
+  const googleDocUrl = await kv.get<string>(`doc:${experienceId}`) ?? 
+                       await kv.get<string>("doc:default") ?? "";
 
   if (!googleDocUrl) {
     return (
@@ -31,5 +28,4 @@ export default async function ExperiencePage({
       allow="autoplay"
     />
   );
-}
 }
