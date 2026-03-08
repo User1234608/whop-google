@@ -19,21 +19,11 @@ export default async function ExperiencePage({
 
   const googleDocUrl = (await redis.get<string>(`doc:${companyId}`)) ?? "";
 
-  if (!googleDocUrl) {
-    return (
-      <div className="flex items-center justify-center h-screen text-gray-400 text-lg">
-        No document configured yet.
-      </div>
-    );
-  }
-
-  const embedUrl = googleDocUrl.replace(/\/edit.*$/, "/preview");
-
   return (
-    <iframe
-      src={embedUrl}
-      className="w-full h-screen border-0"
-      allow="autoplay"
-    />
+    <div className="p-4 text-sm">
+      <p>experienceId: {experienceId}</p>
+      <p>companyId: {companyId}</p>
+      <p>googleDocUrl: {googleDocUrl || "not found"}</p>
+    </div>
   );
 }
