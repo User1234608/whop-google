@@ -6,7 +6,11 @@ export default async function ExperiencePage({
   params: Promise<{ experienceId: string }>;
 }) {
   const { experienceId } = await params;
-  const redis = Redis.fromEnv();
+
+  const redis = new Redis({
+    url: process.env.storage_KV_REST_API_URL!,
+    token: process.env.storage_KV_REST_API_TOKEN!,
+  });
 
   const googleDocUrl = (await redis.get<string>(`doc:${experienceId}`)) ?? "";
 

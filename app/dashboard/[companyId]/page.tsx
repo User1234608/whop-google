@@ -6,13 +6,21 @@ export default async function DashboardPage({
   params: Promise<{ companyId: string }>;
 }) {
   const { companyId } = await params;
-  const redis = Redis.fromEnv();
+
+  const redis = new Redis({
+    url: process.env.storage_KV_REST_API_URL!,
+    token: process.env.storage_KV_REST_API_TOKEN!,
+  });
+
   const savedUrl = (await redis.get<string>(`doc:${companyId}`)) ?? "";
 
   async function saveDocUrl(formData: FormData) {
     "use server";
     const { companyId } = await params;
-    const redis = Redis.fromEnv();
+    const redis = new Redis({
+      url: process.env.storage_KV_REST_API_URL!,
+      token: process.env.storage_KV_REST_API_TOKEN!,
+    });
     const url = formData.get("docUrl") as string;
     await redis.set(`doc:${companyId}`, url);
   }
@@ -33,6 +41,17 @@ export default async function DashboardPage({
         />
         <button
           type="submit"
+          className="bg-black text-white px-6 py-2 rounded-lg w-fit"
+        >
+          Save
+        </button>
+      </form>
+      {savedUrl && (
+        <p className="mt-4 text-sm text-green-600">✓ Document is set</p>
+      )}
+    </div>
+  );
+}
           className="bg-black text-white px-6 py-2 rounded-lg w-fit"
         >
           Save
