@@ -22,7 +22,7 @@ export default async function ExperiencePage({
   return (
     <div className="p-4 text-sm">
       <p>experienceId: {experienceId}</p>
-      <p>companyId: {companyId}</p>
+      <<p>companyId: {JSON.stringify(companyId)}</p>
       <p>googleDocUrl: {googleDocUrl || "not found"}</p>
     </div>
   );
