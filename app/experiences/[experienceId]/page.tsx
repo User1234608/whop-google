@@ -10,7 +10,7 @@ export default async function ExperiencePage({
 
   const whop = new Whop({ apiKey: process.env.WHOP_API_KEY });
   const experience = await whop.experiences.retrieve(experienceId);
-  const companyId = experience.company_id;
+  const companyId = experience.company;
 
   const redis = new Redis({
     url: process.env.storage_KV_REST_API_URL!,
