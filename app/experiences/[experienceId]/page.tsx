@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 
 export default async function ExperiencePage({
   params,
@@ -6,10 +6,9 @@ export default async function ExperiencePage({
   params: Promise<{ experienceId: string }>;
 }) {
   const { experienceId } = await params;
+  const redis = Redis.fromEnv();
 
-  // Use experienceId as the key directly
-  const googleDocUrl = await kv.get<string>(`doc:${experienceId}`) ?? 
-                       await kv.get<string>("doc:default") ?? "";
+  const googleDocUrl = (await redis.get<string>(`doc:${experienceId}`)) ?? "";
 
   if (!googleDocUrl) {
     return (

@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 
 export default async function DashboardPage({
   params,
@@ -6,13 +6,15 @@ export default async function DashboardPage({
   params: Promise<{ companyId: string }>;
 }) {
   const { companyId } = await params;
-  const savedUrl = (await kv.get<string>(`doc:${companyId}`)) ?? "";
+  const redis = Redis.fromEnv();
+  const savedUrl = (await redis.get<string>(`doc:${companyId}`)) ?? "";
 
   async function saveDocUrl(formData: FormData) {
     "use server";
     const { companyId } = await params;
+    const redis = Redis.fromEnv();
     const url = formData.get("docUrl") as string;
-    await kv.set(`doc:${companyId}`, url);
+    await redis.set(`doc:${companyId}`, url);
   }
 
   return (
