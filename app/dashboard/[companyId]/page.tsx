@@ -52,14 +52,3 @@ export default async function DashboardPage({
     </div>
   );
 }
-          className="bg-black text-white px-6 py-2 rounded-lg w-fit"
-        >
-          Save
-        </button>
-      </form>
-      {savedUrl && (
-        <p className="mt-4 text-sm text-green-600">Document is set</p>
-      )}
-    </div>
-  );
-}
