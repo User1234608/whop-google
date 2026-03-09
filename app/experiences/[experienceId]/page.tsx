@@ -10,7 +10,7 @@ export default async function ExperiencePage({
 
   const whop = new Whop({ apiKey: process.env.WHOP_API_KEY });
   const experience = await whop.experiences.retrieve(experienceId);
-  const companyId = experience.company;
+  const companyId = experience.company.id;
 
   const redis = new Redis({
     url: process.env.storage_KV_REST_API_URL!,
@@ -19,11 +19,21 @@ export default async function ExperiencePage({
 
   const googleDocUrl = (await redis.get<string>(`doc:${companyId}`)) ?? "";
 
+  if (!googleDocUrl) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-400 text-lg">
+        No document configured yet.
+      </div>
+    );
+  }
+
+  const embedUrl = googleDocUrl.replace(/\/edit.*$/, "/preview");
+
   return (
-    <div className="p-4 text-sm">
-      <p>experienceId: {experienceId}</p>
-      <p>companyId: {JSON.stringify(companyId)}</p>
-      <p>googleDocUrl: {googleDocUrl || "not found"}</p>
-    </div>
+    <iframe
+      src={embedUrl}
+      className="w-full h-screen border-0"
+      allow="autoplay"
+    />
   );
 }
