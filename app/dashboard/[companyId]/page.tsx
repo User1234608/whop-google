@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import { revalidatePath } from "next/cache";
 
 export default async function DashboardPage({
   params,
@@ -16,13 +17,13 @@ export default async function DashboardPage({
 
   async function saveDocUrl(formData: FormData) {
     "use server";
-    const { companyId } = await params;
     const redis = new Redis({
       url: process.env.storage_KV_REST_API_URL!,
       token: process.env.storage_KV_REST_API_TOKEN!,
     });
     const url = formData.get("docUrl") as string;
     await redis.set(`doc:${companyId}`, url);
+    revalidatePath(`/dashboard/${companyId}`);
   }
 
   return (
@@ -47,7 +48,7 @@ export default async function DashboardPage({
         </button>
       </form>
       {savedUrl && (
-        <p className="mt-4 text-sm text-green-600">Document is set</p>
+        <p className="mt-4 text-sm text-green-600">Current: {savedUrl}</p>
       )}
     </div>
   );
